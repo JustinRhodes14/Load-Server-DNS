@@ -1,8 +1,68 @@
 import threading
-import time
+from time import sleep
 import random
+import fcntl, os
 import sys
+import errno
 import socket
+
+def tsRequest(domain,th1,tp1,th2,tp2):
+    try:
+        sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock1.settimeout(2)
+        print("[LS]: Connected with TS1 server...")
+    except:
+        print("Socket open error: {} \n".format(err))
+        exit()
+
+
+    try:
+        sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock2.settimeout(2)
+        print("[LS]: Connected with TS2 server...")
+    except:
+        print("Socket open error: {} \n".format(err))
+        exit()
+
+    server_binding1 = (th1,tp1)
+    server_binding2 = (th2,tp2)
+
+    sock1.connect(server_binding1)
+    sock2.connect(server_binding2)
+
+    sock1.send(domain)
+    sock2.send(domain)
+
+    try:
+        msg1 = sock1.recv(500)
+    except socket.timeout, e:
+        err = e.args[0]
+        if err == 'timed out':
+            sleep(1)
+            print("No data available from TS1")
+        else:
+            print(e)
+            sys.exit(1)
+    else:
+        print(msg1)
+
+    try:
+        msg2 = sock2.recv(500)
+    except socket.error, e:
+        err = e.args[0]
+        if err == 'timed out':
+            sleep(1)
+            print("No data available from TS2")
+        else:
+            print(e)
+            sys.exit(1)
+    else:
+        print(msg2)
+
+    sock1.close()
+    sock2.close()
+
+
 
 if len(sys.argv) != 6:
     print("Invalid arguments, please use the following to start the server: python ls.py lsListenPort ts1Hostname ts1ListenPort ts2Hostname ts2ListenPort")
@@ -52,7 +112,7 @@ for i in range(x):
     print(msg)
 
     #Do stuff below connecting to both ts1 and ts2 to query each table
-
+    tsRequest(msg,ts1Host,ts1Port,ts2Host,ts2Port)
 
 csockid.recv(100) #This is temporary, just so we can insta start the ls each time
 csockid.close()

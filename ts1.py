@@ -40,5 +40,15 @@ host = socket.gethostname()
 print("[S]: Server host name is {}".format(host))
 localhost_ip = (socket.gethostbyname(host))
 print("[S]: Server IP address is {}".format(localhost_ip))
-csockid, addr = ss.accept()
-print ("[S]: Got a connection request from a client at {}".format(addr))
+
+while True:
+    csockid, addr = ss.accept()
+    print ("[S]: Got a connection request from a client at {}".format(addr))
+    query = csockid.recv(200)
+
+    result = ""
+
+    if query.lower() in dns:
+        result = dns[query.lower()]
+        print(result)
+        csockid.send(result)
