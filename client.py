@@ -11,6 +11,8 @@ def sendQueries(queries,sock):
     sock.send(str(qLength).encode('utf-8'))
     sock.recv(100)
 
+    file = open("RESOLVED.txt","w")
+
     for item in queries:
         msg = str(len(item))
         sock.send(msg.encode('utf-8'))
@@ -18,8 +20,13 @@ def sendQueries(queries,sock):
         sock.send(item.encode('utf-8'))
         sock.recv(100)
         sock.send("ready")
-
+        
         #Receive message back from LS after it queries from ts1 & ts2
+        result = sock.recv(500)
+        if "Error:" in result:
+            file.write(item + " - " + result + "\n")
+        else:
+            file.write(result + "\n")
 
 if len(sys.argv) < 3:
     print(

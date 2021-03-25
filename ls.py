@@ -33,6 +33,7 @@ def tsRequest(domain,th1,tp1,th2,tp2):
     sock1.send(domain)
     sock2.send(domain)
 
+    result = "Error:HOST NOT FOUND"
     try:
         msg1 = sock1.recv(500)
     except socket.timeout, e:
@@ -44,7 +45,8 @@ def tsRequest(domain,th1,tp1,th2,tp2):
             print(e)
             sys.exit(1)
     else:
-        print(msg1)
+        result = msg1
+        #print(msg1)
 
     try:
         msg2 = sock2.recv(500)
@@ -57,11 +59,12 @@ def tsRequest(domain,th1,tp1,th2,tp2):
             print(e)
             sys.exit(1)
     else:
-        print(msg2)
+        result = msg2
+        #print(msg2)
 
     sock1.close()
     sock2.close()
-
+    return result
 
 
 if len(sys.argv) != 6:
@@ -109,10 +112,13 @@ for i in range(x):
     csockid.send("success")
     csockid.recv(100)
     result = ""
-    print(msg)
+    #print(msg)
 
     #Do stuff below connecting to both ts1 and ts2 to query each table
-    tsRequest(msg,ts1Host,ts1Port,ts2Host,ts2Port)
+    result = tsRequest(msg,ts1Host,ts1Port,ts2Host,ts2Port)
+    #print("\n RESULT: {} \n".format(result))
+    #print(result)
+    csockid.send(result)
 
 csockid.recv(100) #This is temporary, just so we can insta start the ls each time
 csockid.close()
