@@ -15,7 +15,7 @@ python ls.py lsListenPort ts1Hostname ts1ListenPort ts2Hostname ts2ListenPort
 python client.py lsHostname lsListenPort
 
 This Zip File Should Include:
-clinet.py
+client.py
 ls.py
 ts1.py
 ts2.py
