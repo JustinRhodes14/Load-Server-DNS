@@ -26,7 +26,6 @@ for i in file:
 file.close()
 
 
-
 try:
     ss = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("[S]: Server socket created")
@@ -45,8 +44,10 @@ print("[S]: Server IP address is {}".format(localhost_ip))
 while True:
     csockid, addr = ss.accept()
     print ("[S]: Got a connection request from a client at {}".format(addr))
-
     query = csockid.recv(200)
+
+    if query == 'finish':
+        break
 
     result = ""
 
@@ -54,3 +55,5 @@ while True:
         result = dns[query.lower()]
         print(result)
         csockid.send(result)
+
+print("[S]: Connection broken from {}".format(addr))

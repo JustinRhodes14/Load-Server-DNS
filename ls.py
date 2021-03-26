@@ -33,6 +33,11 @@ def tsRequest(domain,th1,tp1,th2,tp2):
     sock1.send(domain)
     sock2.send(domain)
 
+    if domain == 'finish':
+        sock1.close()
+        sock2.close()
+        return ''
+
     result = "Error:HOST NOT FOUND"
     try:
         msg1 = sock1.recv(500)
@@ -120,5 +125,7 @@ for i in range(x):
     #print(result)
     csockid.send(result)
 
+tsRequest("finish",ts1Host,ts1Port,ts2Host,ts2Port)
+print("[LS]: End of query. Closing connection...")
 csockid.recv(100) #This is temporary, just so we can insta start the ls each time
 csockid.close()

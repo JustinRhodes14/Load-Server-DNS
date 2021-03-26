@@ -46,9 +46,14 @@ while True:
     print ("[S]: Got a connection request from a client at {}".format(addr))
     query = csockid.recv(200)
 
+    if query == 'finish':
+        break
+
     result = ""
 
     if query.lower() in dns:
         result = dns[query.lower()]
         print(result)
         csockid.send(result)
+
+print("[S]: Connection broken from {}".format(addr))
